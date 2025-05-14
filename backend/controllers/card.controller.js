@@ -1,4 +1,4 @@
-const CardService = require('../services/card.service');
+const cardService = require('../services/card.service');
 const logger = require ('../logger/logger');
 
 // @desc    Search for cards in MTG API by name
@@ -6,7 +6,7 @@ const logger = require ('../logger/logger');
 // @access  Public
 const getCardFromAPI = async (req, res) => {
     try {
-        const cards = await CardService.searchMTGAPI(req.params.name);
+        const cards = await cardService.searchMTGAPI(req.params.name);
         if (!cards) {
             return res.status(404).json({ message: 'No cards Found'});
         }
@@ -21,7 +21,7 @@ const getCardFromAPI = async (req, res) => {
 // @access  Public
 const getAllCards = async (req, res) => {
     try {
-        const cards = await CardService.findAll();
+        const cards = await cardService.findAll();
         logger.debug(`Found ${cards.length} cards`);
         res.status(200).json(cards);
     } catch(error) {
@@ -36,7 +36,7 @@ const getAllCards = async (req, res) => {
 const getCardByName = async (req, res) => {
     try {
         const decodedName = decodeURIComponent(req.params.name);
-        const card = await CardService.findByName(decodedName);
+        const card = await cardService.findByName(decodedName);
 
         if(!card) {
             return res.status(404).json({ message: 'Card not found'});
@@ -52,7 +52,7 @@ const getCardByName = async (req, res) => {
 // @access  Public
 const addToCollection = async (req, res) => {
     try {
-        const savedCard = await CardService.addCard(req.body);
+        const savedCard = await cardService.addCard(req.body);
         res.status(201).json(savedCard);
     } catch (error) {
         logger.error('Error adding card', { error: error.message});
@@ -68,7 +68,7 @@ const addToCollection = async (req, res) => {
 // @access  Public
 const updateCard = async (req, res) => {
     try {
-        const updatedCard = await CardService.updateCard(req.params.id, req.body.quantity);
+        const updatedCard = await cardService.updateCard(req.params.id, req.body.quantity);
         if(!updatedCard) {
             return res.status(404).json({ message: 'Card not found'});
         }
