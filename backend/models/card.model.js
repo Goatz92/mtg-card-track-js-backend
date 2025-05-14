@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const cardSchema = new mongoose.Schema({
+    id: {
+        type: String,
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -16,11 +20,7 @@ const cardSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         default: 1,
-    },
-    imageUrl: {
-        type: String,
-        required: true,
-    },
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Card', cardSchema);
