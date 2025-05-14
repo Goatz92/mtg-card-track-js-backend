@@ -1,5 +1,6 @@
 const Card = require('../models/Card.model');
 const mtg = require('mtgsdk');
+const mongoose = require('mongoose');
 
 // @desc    Search for MTG cards from MTG API by name
 // @route   GET /api/cards/search/:name
@@ -18,7 +19,16 @@ const getCardFromAPI = async (req, res) => {
 // @access  Public
 const getAllCards = async (req, res) => {
     try {
+        console.log('Database:', mongoose.connection.name);
+        console.log('collection:', mongoose.connection.collection('cards').collectionName);
+
         const cards = await Card.find();
+        console.log('Found cards: ', cards.length);
+        if (cards.length === 0) {
+            console.log('No cards Found');
+            const rawCards = await mongoose.connection.collection('cards').find({}).toArray();
+            console.log('Raw data:', rawCards);
+        }
         res.status(200).json(cards);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching cards', error: error.message });
@@ -30,7 +40,25 @@ const getAllCards = async (req, res) => {
 // @access  Public
 const getCardByName = async (req, res) => {
     try {
-        const card =await Card.findByName(req.params.id);
+        const decodedName = decodeURIComponent(req.params.name)
+        const card = await Card.findOne({ name: decodedName });
+
+        if(!card) {
+            return res.status(404).json({ message: 'Card not found'})
+        }
+
+        res.status(200).json(card);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching card', error: error.message });
+    }
+}
+
+// @desc    Get card by id
+// @route   GET /api/cards/:id
+// @access  Public
+const getCardById = async (req, res) => {
+    try {
+        const card = await Card.findById(req.params.id);
         res.status(200).json(card);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching card', error: error.message });
