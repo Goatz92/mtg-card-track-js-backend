@@ -1,7 +1,7 @@
 const Card = require('../models/card.model');
 const mtg = require('mtgsdk');
 const logger = require('../logger/logger');
-const { search } = require('../app');
+// const { search } = require('../app');
 
 function findAll() {
     return Card.find();
@@ -60,3 +60,11 @@ async function addCard(cardData) {
         throw error;
     }
 }
+
+module.exports = {
+    findAll,
+    findByName,
+    findById,
+    searchMTGAPI,
+    addCard
+};
