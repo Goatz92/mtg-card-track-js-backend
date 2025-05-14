@@ -1,6 +1,6 @@
-const Card = require('/models/card.model');
+const Card = require('../models/card.model');
 const mtg = require('mtgsdk');
-const logger = require('logger/logger');
+const logger = require('../logger/logger');
 const { search } = require('../app');
 
 function findAll() {
