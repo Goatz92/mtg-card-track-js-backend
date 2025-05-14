@@ -18,6 +18,9 @@
     "express": "^5.1.0",
     "mongodb": "^6.16.0",
     "mongoose": "^8.14.3",
-    "mtgsdk": "^1.0.1"
+    "mtgsdk": "^1.0.1",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "winston-mongodb": "^6.0.0"
   }
 }
