@@ -23,6 +23,5 @@ app.get('/', (req, res) => {
 
 // Card Routes
 app.use('/api/cards', require('./routes/card.route'));
-app.use('/api/collection', require('./routes/card.route'));
 
 module.exports = app;
