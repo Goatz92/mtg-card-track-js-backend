@@ -1,5 +1,5 @@
-const CardService = require('/services/card.service');
-const logger = require ('logger/logger');
+const CardService = require('../services/card.service');
+const logger = require ('../logger/logger');
 
 // @desc    Search for cards in MTG API by name
 // @route   GET /api/cards/search/:name
