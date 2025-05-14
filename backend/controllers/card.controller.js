@@ -1,4 +1,16 @@
 const Card = require('../models/Card.model');
+const mtg = require('mtgsdk');
+
+//@desc    Search for MTG cards from MTG API by name
+// @access  Public
+const searchMTGCards = async (req, res) => {
+    try {
+        const cards = await mtg.card.where({ name: req.params.name });
+        res.status(200).json(cards);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching cards', error: error.message });
+    }
+}
 
 // @desc    Get all cards
 // @route   GET /api/cards
@@ -94,4 +106,5 @@ module.exports = {
     addToCollection,
     updateCard,
     deleteCard,
+    searchMTGCards
 }
