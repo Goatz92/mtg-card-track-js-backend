@@ -1,9 +1,10 @@
 const Card = require('../models/Card.model');
 const mtg = require('mtgsdk');
 
-//@desc    Search for MTG cards from MTG API by name
+// @desc    Search for MTG cards from MTG API by name
+// @route   GET /api/cards/search/:name
 // @access  Public
-const searchMTGCards = async (req, res) => {
+const getCardFromAPI = async (req, res) => {
     try {
         const cards = await mtg.card.where({ name: req.params.name });
         res.status(200).json(cards);
@@ -41,23 +42,62 @@ const getCardByName = async (req, res) => {
 // @access  Public
 const addToCollection = async (req, res) => {
     try {
-        const { cardId, quantity } = req.body;
+        const { name, quantity } = req.body;
+        console.log('1. Request received: ', {name, quantity});
 
         // Fetch card data from MTG API
-        const mtgResponse = await axios.get(`${process.env.MTG_API_URL}/cards/${cardId}`);
-        const cardData = mtgResponse.data.card;
+        const result = await mtg.card.where({ name: name });
+        console.log('2. MTG API response:', result[0]);
+
+        if (!result || result.length === 0) {
+            return res.status(404).json({ message: 'Card not found in MTG API' });
+        }
+
+        const cardData = result[0];
+        console.log('3. Card data:', cardData);
+
+         // Transform rarity to match enum
+        const rarityMap = {
+            'rare': 'RARE',
+            'common': 'COMMON',
+            'uncommon': 'UNCOMMON',
+            'mythic rare': 'MYTHIC RARE',
+            'special': 'SPECIAL'
+        };
+
+        const mappedRarity = rarityMap[cardData.rarity.toLowerCase()];
+        console.log('4. Mapped rarity:', mappedRarity);
+        if (!mappedRarity) {
+            return res.status(400).json({ message: 'Invalid rarity type' });
+        }
 
         // Save to collection
-        const newCard = await Card.create({
-            mtgId: cardData.id,
+        const newCard = new Card({
             name: cardData.name,
             set: cardData.set,
-            rarity: cardData.rarity,
-            quantity: quantity
+            rarity: rarityMap[cardData.rarity.toLowerCase()] || 'SPECIAL',
+            quantity: quantity || 1,
+            createdAt: Date.now(),
+            updatedAt: Date.now()
         });
-        res.status(201).json(newCard);
+
+        console.log('5. Attempt to save:', newCard);
+        const savedCard = await newCard.save();
+        console.log('6. Card saved:', savedCard);
+
+        if (!savedCard) {
+            return res.status(500).json({ message: 'Error saving card to collection' });
+        }
+        res.status(201).json(savedCard);
     } catch (error) {
-        res.status(500).json({ message: 'Error adding card to collection', error: error.message });
+        console.error('Error in Details:', {
+            message: error.message,
+            name: error.name,
+            stack: error.stack
+        });
+        return res.status(500).json({ 
+            message: 'Error adding card to collection', error: error.message 
+        });
     }
 }
 
@@ -106,5 +146,5 @@ module.exports = {
     addToCollection,
     updateCard,
     deleteCard,
-    searchMTGCards
+    getCardFromAPI
 }
