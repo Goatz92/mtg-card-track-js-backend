@@ -1,18 +1,19 @@
 const cardService = require('../services/card.service');
 const logger = require ('../logger/logger');
+const { successResponse, errorResponse } = require('../utils/responseHandler');
 
 // @desc    Search for cards in MTG API by name
 // @route   GET /api/cards/search/:name
 // @access  Public
 const getCardFromAPI = async (req, res) => {
     try {
-        const cards = await cardService.searchMTGAPI(req.params.name);
-        if (!cards) {
-            return res.status(404).json({ message: 'No cards Found'});
+        const card = await cardService.searchMTGAPI(req.params.name);
+        if (!card || card.length === 0) {
+            return errorResponse(res, 404, 'Card not found');
         }
-        res.status(200).json(cards);
+        successResponse(res, 200, card, 'Card retrieved successfully');
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching cards', error: error.message});
+        errorResponse(res, 500, 'Error fetching cards from API', error);
     }
 } 
 
@@ -23,10 +24,10 @@ const getAllCards = async (req, res) => {
     try {
         const cards = await cardService.findAll();
         logger.debug(`Found ${cards.length} cards`);
-        res.status(200).json(cards);
+        successResponse(res, 200, cards, 'Card retrieved successfully');
     } catch(error) {
         logger.error('Error fetching Cards', { error: error.message });
-        res.status(500).json({ message: 'Error fetcing cards', error: error.message});
+        errorResponse(res, 500, 'Error fetching card from API');
     }
 }
 
@@ -35,15 +36,15 @@ const getAllCards = async (req, res) => {
 // @access  Public
 const getCardByName = async (req, res) => {
     try {
-        const decodedName = decodeURIComponent(req.params.name);
+        // const decodedName = decodeURIComponent(req.params.name);
         const card = await cardService.findByName(decodedName);
 
         if(!card) {
-            return res.status(404).json({ message: 'Card not found'});
+            return errorResponse(res, 404, 'Card not found');
         }
-        res.status(200).json(card);
+        successResponse(res, 200, card, 'Card retrieved successfully');
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching card', error: error.message});
+        errorResponse(res, 500, 'Error fetching card', error);
     }
 }
 
@@ -53,28 +54,39 @@ const getCardByName = async (req, res) => {
 const addToCollection = async (req, res) => {
     try {
         const savedCard = await cardService.addCard(req.body);
-        res.status(201).json(savedCard);
+        successResponse(res, 201, savedCard, 'Card added to collection succesfully');
     } catch (error) {
-        logger.error('Error adding card', { error: error.message});
-        res.status(500).json({
-            message: 'Error adding card to collection',
+        logger.error('Error adding card', {
+            cardData: req.body,
             error: error.message
         });
+
+        const status = error.message.includes('not found') ? 404 : 500;
+        errorResponse(res, status, error.message, error);
     }
 }
+
 
 // @desc    Update a card in user's collection
 // @route   PUT /api/collection/:id
 // @access  Public
 const updateCard = async (req, res) => {
     try {
-        const updatedCard = await cardService.updateCard(req.params.id, req.body.quantity);
+        const updatedCard = await cardService.updateCard(
+            req.params.id, 
+            req.body.quantity
+        );
+
         if(!updatedCard) {
-            return res.status(404).json({ message: 'Card not found'});
+            return errorResponse(res, 404, 'Card not found');
         }
-        res.status(200).json(updatedCard);
+        successResponse(res, 200, updatedCard, 'Card updated succesfully');
     } catch (error) {
-        res.status(500).json({ message: 'Error updating card', error: error.message});
+        logger.error('Error updating Card', {
+            cardId: req.params.id,
+            error: error.message
+        })
+        errorResponse(res, 500, 'Error updating Card', error);
     }
 }
 
@@ -85,21 +97,18 @@ const deleteCard = async (req, res) => {
     try {
         const deletedCard = await cardService.deleteCard(req.params.id);
         if (!deletedCard) {
-            return res.status(404).json({ message: 'Card not found'});
+            return errorResponse(res, 404, 'Card not found');
         }
-        res.status(200).json({ 
-            success: true,
-            message: 'Card Deleted successfully',
-            data: deletedCard
-    });
+        
+        successResponse(res, 200, deletedCard, 'Card deleted succesfully');
     } catch (error) {
-        res.status(500).json({ 
-            success: false,
-            message: 'Error deleting card', 
+        logger.error('Error deleting Card', {
+            cardId: req.params.id,
             error: error.message
         });
+        errorResponse(res, 500, 'Error deleting card', error);
     }
-}
+};
 
 module.exports = {
     getAllCards,
@@ -108,4 +117,4 @@ module.exports = {
     updateCard,
     deleteCard,
     getCardFromAPI
-}
+};
