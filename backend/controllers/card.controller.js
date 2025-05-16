@@ -37,7 +37,7 @@ const getAllCards = async (req, res) => {
 // @access  Public
 const getCardByName = async (req, res) => {
     try {
-        // const decodedName = decodeURIComponent(req.params.name);
+        const decodedName = decodeURIComponent(req.params.name);
         const card = await cardService.findByName(decodedName);
 
         if(!card) {
