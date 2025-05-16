@@ -83,13 +83,21 @@ const updateCard = async (req, res) => {
 // @access  Public
 const deleteCard = async (req, res) => {
     try {
-        const deleteCard = await cardService.deleteCard(req.params.id);
+        const deletedCard = await cardService.deleteCard(req.params.id);
         if (!deletedCard) {
             return res.status(404).json({ message: 'Card not found'});
         }
-        res.status(200).json({ message: 'Card Deleted successfully'});
+        res.status(200).json({ 
+            success: true,
+            message: 'Card Deleted successfully',
+            data: deletedCard
+    });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting card', error: error.message});
+        res.status(500).json({ 
+            success: false,
+            message: 'Error deleting card', 
+            error: error.message
+        });
     }
 }
 
