@@ -114,4 +114,4 @@ cardSchema.virtual('displayName').get(function() {
     return `${this.name} (${this.set.toUpperCase()}) ${this.collectorNumber}`;
 });
 
-module.exports = mongoose.model('Cards', cardSchema);
+module.exports = mongoose.model('Card', cardSchema, 'cards');
