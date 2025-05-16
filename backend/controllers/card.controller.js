@@ -13,6 +13,7 @@ const getCardFromAPI = async (req, res) => {
         }
         successResponse(res, 200, card, 'Card retrieved successfully');
     } catch (error) {
+        logger.error('Error searcing MTG API', { error: error.message});
         errorResponse(res, 500, 'Error fetching cards from API', error);
     }
 } 
