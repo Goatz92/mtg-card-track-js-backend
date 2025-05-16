@@ -16,6 +16,6 @@ router.get('/', getAllCards); // Get all cards
 router.post('/add', addToCollection); // Add card to collection
 router.get('/:name', getCardByName); // Get card by name from collection
 router.put('/:id', updateCard); // Update card in collection
-router.delete('/:id', deleteCard); // Delete card from collection
+router.delete('collection/:id', deleteCard); // Delete card from collection
 
 module.exports = router;
