@@ -1,6 +1,7 @@
 const Card = require('../models/card.model');
 const mtg = require('mtgsdk');
 const logger = require('../logger/logger');
+const mongoose = require('mongoose');
 // const { search } = require('../app');
 
 function findAll() {
@@ -61,10 +62,39 @@ async function addCard(cardData) {
     }
 }
 
+async function deleteCard(cardData) {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new Error('Invalid card ID Format');
+        }
+
+        const deletedCard = await Card.findByIdAndDelete(id);
+        
+        if(!deletedCard) {
+            logger.info('Card not found for deletion', { cardId: id});
+            return null;
+        }
+
+        logger.info('Card successfully deleted', {
+            cardId: deletedCard._id,
+            cardName: deletedCard.name
+        });
+
+        return deletedCard;
+    } catch(error) {
+        logger.error('Error deleting card', {
+            cardId: id,
+            error: error.message
+        });
+        throw error;
+    }
+}
+
 module.exports = {
     findAll,
     findByName,
     findById,
     searchMTGAPI,
-    addCard
+    addCard,
+    deleteCard
 };
