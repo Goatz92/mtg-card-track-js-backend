@@ -1,9 +1,9 @@
 const Card = require('../models/card.model');
-const mtg = require('mtgsdk');
+const scryfallService = require('./scryfall.service');
 const logger = require('../logger/logger');
 const mongoose = require('mongoose');
-// const { search } = require('../app');
 
+// Basic CRUD Operations
 function findAll() {
     return Card.find();
 }
@@ -16,53 +16,58 @@ function findById(id) {
     return Card.findById(id);
 }
 
-async function searchMTGAPI(name) {
+// Scryfall Integration
+async function searchScryfallAPI(name, exact = true) {
     try {
-        const result = await mtg.card.where({ name: name});
-        return result;
+        const cards = await scryfallService.getCardByName(name, exact);
+        return Array.isArray(cards) ? cards : [cards]; 
     } catch (error) {
-        logger.error('Error searchin MTG API', { error: error.message });
-        return false;
-    }
-}
-
-async function addCard(cardData) {
-    try {
-        const existingCard = await findByName(cardData.name);
-        if (existingCard) {
-            existingCard.quantity += cardData.quantity || 1;
-            return existingCard.save();
-        }
-
-        const apiResult = await searchMTGAPI(cardData.name);
-        if(!apiResult || apiResult.length === 0) {
-            throw new Error('Card not found in MTG API');
-        }
-
-        const mtgCard = apiResult[0];
-        const rarityMap = {
-            'rare': 'RARE',
-            'common': 'COMMON',
-            'uncommon': 'UNCOMMON',
-            'mythic rare': 'MYTHIC RARE',
-            'special': 'SPECIAL'
-        };
-        
-        const newCard = new Card ({
-            name: mtgCard.name,
-            set: mtgCard.set,
-            rarity: rarityMap[mtgCard.rarity.toLowerCase()] || 'SPECIAL',
-            quantity: cardData.quantity || 1
-        });
-
-        return newCard.save();
-    } catch (error) {
-        logger.error('Error adding card', { error: error.message });
+        logger.error('Error searching in Scryfall API', {error: error.message });
         throw error;
     }
 }
 
-async function deleteCard(cardData) {
+async function addCardFromScryfall(scryfallId, userData = {}) {
+    try {
+        // Check if card already exists
+        const existingCard = await Card.findOne({ scryfallId });
+        if (existingCard) {
+            existingCard.quantity += userData.quantity || 1;
+            return existingCard.save();
+        }
+
+        // Fetch from Scryfall API
+        const scryfallCard = await ScryfallService.getCardById(scryfallId);
+        
+        // Transform to my schema
+        const cardData = {
+            scryfallId: scryfallCard.id,
+            name: scryfallCard.name,
+            manaCost: scryfallCard.mana_cost,
+            cmc: scryfallCard.cmc,
+            colors: scryfallCard.colors,
+            type: scryfallCard.type_line,
+            rarity: scryfallCard.rarity.toUpperCase(),
+            set: scryfallCard.set.toUpperCase(),
+            setName: scryfallCard.set_name,
+            imageUrl: scryfallCard.image_uris?.normal || 
+                     scryfallCard.card_faces?.[0]?.image_uris?.normal,
+            quantity: userData.quantity || 1,
+            isFoil: userData.isFoil || false
+        };
+
+        const newCard = new Card(cardData);
+        return newCard.save();
+    } catch (error) {
+        logger.error('Error adding card from Scryfall', {
+            scryfallId,
+            error: error.message
+        });
+        throw error;
+    }
+}
+
+async function deleteCard(id) {
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw new Error('Invalid card ID Format');
@@ -94,7 +99,7 @@ module.exports = {
     findAll,
     findByName,
     findById,
-    searchMTGAPI,
-    addCard,
+    searchScryfallAPI,
+    addCardFromScryfall,
     deleteCard
 };
