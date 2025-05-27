@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
@@ -24,6 +24,10 @@ const userSchema = new Schema ({
         type: String,
         required: true,
         minlength: 8
+    },
+    roles: {
+        type: [String],
+        default: ['USER']
     },
 
     //Profile Information
