@@ -20,7 +20,7 @@ class ScryfallService {
                 cardName: name
             });
             throw error;
-        }
+        } 
     }
 
     async getCardById(id) {
