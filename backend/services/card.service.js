@@ -37,7 +37,7 @@ async function addCardFromScryfall(scryfallId, userData = {}) {
         }
 
         // Fetch from Scryfall API
-        const scryfallCard = await ScryfallService.getCardById(scryfallId);
+        const scryfallCard = await scryfallService.getCardById(scryfallId);
         
         // Transform to my schema
         const cardData = {
