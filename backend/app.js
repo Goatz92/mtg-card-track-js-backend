@@ -1,17 +1,20 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
-const cardRoutes = require('./routes/card.route');
+
+const user = require('./routes/user.route');
+const auth = require('./routes/auth.route');
 
 const app = express();
 
 app.use(cors({
-    // origin: '*'
     origin: 'http://localhost:4200',
     credentials: true
 }));
 app.use(express.json());
+
+app.use('/api/auth', auth);
+app.use('/api/users', user);
 
 //MTG API Base URL
 const MTG_API_URL = process.env.MTG_API_URL;
