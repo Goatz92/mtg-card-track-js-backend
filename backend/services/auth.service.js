@@ -31,7 +31,7 @@ async function googleAuth(code) {
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     const REDIRECT_URI = process.env.REDIRECT_URI;
 
-    const oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_ID, REDIRECT_URI); 
+    const oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI); 
 
     try {
         // Exchange code for Token
