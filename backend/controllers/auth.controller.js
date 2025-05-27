@@ -17,7 +17,9 @@ exports.login = async(req, res) => {
             if (result && result.username === username && isMatch) {
                 const token = authService.generateAccessToken(result);
                 res.status(200).json({ status: true, data: token });
-                } 
+                } else {
+                    res.status(404).json({ status: false, data: "Error: User not logged in"});
+                }
         } catch (err) {
             console.log("Problem in logging: ", err);
             res.status(400).json({ status: false, data: err })
@@ -30,7 +32,7 @@ exports.googleLogin = async(req, res) => {
     if(!code) {
         res.status(400).json({ 
             status: false,
-                data: "Authorization code is missing"});
+            data: "Authorization code is missing"});
     } else {
         let user = await authService.googleAuth(code);
         if(user) {
