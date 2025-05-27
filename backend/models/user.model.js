@@ -92,5 +92,3 @@ const userSchema = new Schema ({
 userSchema.virtual('deckCount').get(function() {
     return this.decks.length;
 });
-
-//

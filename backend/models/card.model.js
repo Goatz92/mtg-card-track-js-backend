@@ -9,7 +9,7 @@ const cardSchema = new Schema({
         type: String,
         required: [true, 'Card name is required'],
         trim: true,
-        index: true // Add index for faster searches
+        index: true 
     },
     scryfallId: {
         type: String,
@@ -19,7 +19,6 @@ const cardSchema = new Schema({
 
     // Gameplay Properties
     manaCost: String,
-    // Converted Mana Cost
     cmc: {
         type: Number,
         min: 0
