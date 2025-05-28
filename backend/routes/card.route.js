@@ -17,7 +17,7 @@ router.post('/scryfall/:scryfallId', addCardFromScryfall); // Add a card from Sc
 // router.get('/search/:name', getCardFromAPI); // Get card by name from API
 
 //Local DB operations
-router.get('/', getAllCards); // Get all cards
+router.get('/', getAllCards);
 router.get('/:name', getCardByName); // Get card by name from collection
 
 //Collection Managment
