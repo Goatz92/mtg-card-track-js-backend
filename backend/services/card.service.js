@@ -38,6 +38,10 @@ async function addCardFromScryfall(scryfallId, userData = {}) {
 
         // Fetch from Scryfall API
         const scryfallCard = await scryfallService.getCardById(scryfallId);
+
+        if (!scryfallCard) {
+            throw new Error(`Card not found with ID: ${scryfallId}`);
+        }
         
         // Transform to my schema
         const cardData = {
@@ -68,48 +72,22 @@ async function addCardFromScryfall(scryfallId, userData = {}) {
 }
 
 async function addCardFromScryfallByName(cardName, userData = {}, exact = true) {
+    
     try {
-        // Search Scryfall by name
-        const scryfallCards = await scryfallService.getCardByName(cardName, exact);
-        const cards = Array.isArray(scryfallCards) ? scryfallCards : [scryfallCards];
-
-        if(cards.length === 0) {
+        const scryfallCard = await scryfallService.getCardByName(cardName, exact);
+    
+        if(!scryfallCard) {
             throw new Error(`Card not found: ${cardName}`);
         }
 
-        // Check if multiple versions exist
-        if (cards.length > 1 ) {
-            return {
-                status: 'MULTIPLE_VERSIONS',
-                cards: cards.map(cards => ({
-                    id: card.id,
-                    name: card.name,
-                    set: card.set_name,
-                    set_code: card.set,
-                    collector_number: card.collector_number,
-                    imageUrl: card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal
-                }))
-            };
-        }
-
-        // Get Scryfall ID from single result
-        const scryfallId = cards[0];
-
-        // Check if card exists
-        const existingCard = await Card.findOne({ scryfallId });
-
-        if (existingCard) {
-            // Update quantity
-            existingCard.quantity += userData.quantity || 1;
-            return existingCard.save;
-        }
-
-        // Add card using existing function if it already exists
-        return addCardFromScryfall(scryfallId, userData);
-    } catch (err) {
+        const result = await addCardFromScryfall(scryfallCard.id, userData);
+        
+        return result;
+       
+    } catch (error) {
         logger.error('Error adding card by name', {
             cardName,
-            error: err.message
+            error: error.message
         });
         throw error;
     }
