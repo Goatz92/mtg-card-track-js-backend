@@ -34,22 +34,23 @@ const addCardFromScryfall = async (req, res) => {
 // @access  Public
 const addCardFromScryfallByName = async (req, res) => {
     try {
+
         const { cardName } = req.params;
         const { exact = true } = req.query;
         const userData = req.body;
 
-        const card = await cardService.addCardFromScryfallByName(cardName, userData, exact);
+        const result = await cardService.addCardFromScryfallByName(cardName, userData, exact);
 
-        if (card?.status === 'MULTIPLE_VERSIONS') {
+        if (result?.status === 'MULTIPLE_VERSIONS') {
             return successResponse(res, 300, result.cards, 'Multiple versions found');
         }
-        successResponse(res, 201, card, `Card added succesfully: ${cardName}`); 
-    } catch (err) {
+        successResponse(res, 201, result, `Card added successfully: ${cardName}`); 
+    } catch (error) {
         logger.error('Error adding card by name', { 
-            name: req.params.name, 
+            name: req.params.cardName, 
             error: error.message 
         });
-        errorResponse(res, 500, 'Error adding card', err);
+        errorResponse(res, 500, 'Error adding card', error);
     }
 }
 
