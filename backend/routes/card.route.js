@@ -8,20 +8,22 @@ const {
     searchCardScryfall,
     addCardFromScryfall
 } = require('../controllers/card.controller');
+const { addCardFromScryfallByName } = require('../services/card.service');
 
 // Scryfall routes
-router.get('/search/:name', searchCardScryfall) // Search for single card in Scryfall
-router.post('/scryfall/:scryfallId', addCardFromScryfall); // Add a card from Scryfall to collection
+router.get('/search/:name', searchCardScryfall);
+router.post('/scryfall/:scryfallId', addCardFromScryfall); 
+router.post('/scryfall/:name', addCardFromScryfallByName);
 
 //MTG API routes
 // router.get('/search/:name', getCardFromAPI); // Get card by name from API
 
 //Local DB operations
 router.get('/', getAllCards);
-router.get('/:name', getCardByName); // Get card by name from collection
+router.get('/:name', getCardByName); 
 
 //Collection Managment
-router.put('/:id', updateCard); // Update card in collection
-router.delete('collection/:id', deleteCard); // Delete card from collection
+router.put('/:id', updateCard); 
+router.delete('collection/:id', deleteCard); 
 
 module.exports = router;
