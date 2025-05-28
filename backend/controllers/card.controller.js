@@ -13,7 +13,7 @@ const searchCardScryfall = async (req, res) => {
     }
 }
 
-// @desc    Add card From Scryfall
+// @desc    Add card From Scryfall by ID
 // @route   GET /api/cards/scryfall/:scryfallId
 // @access  Public
 const addCardFromScryfall = async (req, res) => {
@@ -28,6 +28,30 @@ const addCardFromScryfall = async (req, res) => {
         errorResponse(res, 500, 'Error adding card', error);
     }
 };
+
+// @desc    Get card from Scryfall by name
+// @route   GET /api/cards/scryfall/:name
+// @access  Public
+const addCardFromScryfallByName = async (req, res) => {
+    try {
+        const { cardName } = req.params;
+        const { exact = true } = req.query;
+        const userData = req.body;
+
+        const card = await cardService.addCardFromScryfallByName(cardName, userData, exact);
+
+        if (card?.status === 'MULTIPLE_VERSIONS') {
+            return successResponse(res, 300, result.cards, 'Multiple versions found');
+        }
+        successResponse(res, 201, card, `Card added succesfully: ${cardName}`); 
+    } catch (err) {
+        logger.error('Error adding card by name', { 
+            name: req.params.name, 
+            error: error.message 
+        });
+        errorResponse(res, 500, 'Error adding card', err);
+    }
+}
 
 // @desc    Get all cards from database
 // @route   GET /api/cards
@@ -109,9 +133,12 @@ module.exports = {
     updateCard,
     deleteCard,
     searchCardScryfall,
-    addCardFromScryfall
+    addCardFromScryfall,
+    addCardFromScryfallByName
 };
 
+
+// Commented out previous API. Kept for possible future use.
 // @desc    Search for cards in MTG API by name
 // @route   GET /api/cards/search/:name
 // @access  Public
