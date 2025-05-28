@@ -8,16 +8,29 @@ class ScryfallService {
 
     async getCardByName(name, exact = true) {
         try {
+
+            const cleanName = name.trim().toLowerCase();
+
             const response = await axios.get(`${this.baseUrl}/cards/named`, {
-                params: {
-                    [exact ? 'exact' : 'fuzzy']: name
-                }
+                params: exact
+                    ? { exact: cleanName }
+                    : { fuzzy: cleanName }
+                // timeout: 5000
             }); 
+            
+            logger.debug('Scryfall API response', {
+                cardName: name,
+                status: response.status,
+                url: response.config.url
+            });
+
             return response.data;
         } catch (error) {
             logger.error('Scryfall API error', {
                 error: error.message,
-                cardName: name
+                cardName: name,
+                statusCode: error.response?.status,
+                url: error.config?.url
             });
             throw error;
         } 
