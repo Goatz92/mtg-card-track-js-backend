@@ -150,26 +150,32 @@ exports.checkDuplicateEmail = async(req, res) => {
     const email = req.params.email;
 
     try {
-        const result = await User.findOne({emai: email});
+        const result = await User.findOne({email: email});
 
         if(result) {
-            console.log(`User with Email: ${email} already exists`);
+            logger.info(`Email check - duplicate found: ${email}`);
             res.status(400).json({
                 status: false,
-                data: result
+                message: 'Email already exists',
+                data: { email: result.email }
             });
         } else {
-            console.log(`User with Email: ${email} does not exist`);
-            res.status(200).json({
-                status: true,
-                data: result
+            logger.info(`Email check - available: ${email}`);
+        return res.status(200).json({
+            status: true,
+            message: 'Email is available',
+            data: result
             });
         }
     }catch (err) {
-        console.log(`Error: can not find email: ${ email}`, err)
-        res.status(400).json ({
+        logger.error('Error checking email', { 
+            email, 
+            error: err.message 
+        });
+        return res.status(500).json({
             status: false,
-            data: err
+            message: 'Error checking email',
+            error: err.message
         });
     }
 }
