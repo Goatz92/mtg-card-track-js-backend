@@ -45,7 +45,7 @@ function verifyRoles(allowedRole) {
         if(!hasPermission) {
             logger.warn('Insufficient permissions', { 
                 userRoles, 
-                requiredRoles: allowedRoles 
+                requiredRoles: allowedRole
             });
             return res.status(403).json({
                 status: false,
