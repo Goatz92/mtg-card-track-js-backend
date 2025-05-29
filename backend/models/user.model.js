@@ -93,6 +93,8 @@ const userSchema = new Schema ({
 });
 
 // Virtual for deck count
-userSchema.virtual('deckCount').get(function() {
-    return this.decks.length;
-});
+// userSchema.virtual('deckCount').get(function() {
+//     return this.decks.length;
+// });
+
+module.exports = mongoose.model("User", userSchema)
