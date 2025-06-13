@@ -1,0 +1,33 @@
+1. Implement basic backend methods (done);
+
+    -Description
+    Backend should be able to handle simple CRUD operations with cards
+
+    1.1) Implement new models for Users, Decks
+    1.2) Update existing Card model to include more card information
+    1.3) Implement controllers & services for Users
+    1.4) Add Swagger for docs
+
+2. Implement Authorization
+
+    -Description
+    Backend should be able to handle user Authorization via tokens
+
+    2.1) Database user Authorization
+    2.2) Google Auth login
+    2.3) Signup methods
+    2.4) Implement middleware
+
+3. Implement Deck collection methods
+
+    -Description 
+    Backend should then be able to handle Deck collections based on user and save both card collections
+    and deck collections 
+    User should be able to see their constructed decks and if they have all the cards in the list
+    Or see which cards are missing from a list
+
+4. Implement basic test methods
+
+5. Implement basic Frontend with TS and angular/react
+
+6. Upgrade Frontend to industry standards

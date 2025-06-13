@@ -32,7 +32,8 @@ const cardSchema = new Schema({
         enum: ['W', 'U', 'B', 'R', 'G', 'C']
     }],
     type: String,
-    types: [String],
+    // TODO: Search for possible usage or remove
+    types: [String], 
     subtypes: [String],
     text: String,
     power: String, // String to handle values like "*" / "1+1" / "*+1"
