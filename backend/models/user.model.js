@@ -47,6 +47,8 @@ const userSchema = new Schema ({
 
     //Collection Stats
     collectionStats: {
+        card: { type: Schema.Types.ObjectId, ref: 'Card' },
+        quantity: { type: Number, default: 1},
         totalCards: { type: Number, default: 0},
         totalValue: { type: Number, default: 0}, // Maybe use Scryfall values
         byRarity: {
