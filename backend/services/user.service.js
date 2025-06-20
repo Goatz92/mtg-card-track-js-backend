@@ -109,10 +109,25 @@ async function removeCardFromCollection(username, cardId) {
     }
 }
 
+async function updateCardQuantity(username, cardId, newQuantity) {
+    try {
+        const user = await User.findOneAndUpdate(
+            { username, 'collection.cards.card': cardId },
+            { $set: { 'collectionStats.cards.$.quantity': newQuantity } },
+            { new: true }
+        );
+        return user;
+    } catch (error) {
+        logger.error('Error updating card quantity', { username, cardId, error: error.message });
+        throw error;
+    }
+}
+
 module.exports = { 
     findAll, 
     findOne, 
     findLastInserted,
     addCardToCollection,
-    removeCardFromCollection
+    removeCardFromCollection,
+    updateCardQuantity
 };

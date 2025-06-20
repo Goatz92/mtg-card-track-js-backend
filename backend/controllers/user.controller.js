@@ -179,3 +179,108 @@ exports.checkDuplicateEmail = async(req, res) => {
         });
     }
 }
+
+// Card functions
+
+exports.addCardToCollection = async(req, res) => {
+    const username = req.params.username;
+    const cardId = req.params.cardId;
+    const quantity = req.body.quantity || 1;
+
+    try {
+        const result = await userService.addCardToCollection(username, cardId, quantity);
+
+        if(result) {
+            req.status(200).json({
+                status: true,
+                data: result
+            });
+            logger.info(`Successfully added card ${cardId} to ${username}'s collection`)
+        } else {
+            res.status(404).json({
+                status: false,
+                data: "Error: User or card not Found"
+            });
+            logger.warn(`Failed to add card - user or card not found`, {
+                username, cardId });
+        }
+    } catch (error) {
+        logger.error("Error adding card to collection", {
+            username,
+            cardId,
+            error: error.message
+        });
+        res.status(400).json({
+            status: false,
+            data: error.message
+        });
+    }
+};
+
+exports.removeCardFromCollection = async (req, res) => {
+    const username = req.params.username;
+    const cardId = req.params.cardId;
+
+    try {
+        const result = await userService.removeCardFromCollection(username, cardId);
+        
+        if (result) {
+            res.status(200).json({
+                status: true,
+                data: result
+            });
+            logger.info(`Successfully removed card ${cardId} from ${username}'s collection`);
+        } else {
+            res.status(404).json({
+                status: false,
+                data: "Error: User or card not found in collection"
+            });
+            logger.warn(`Failed to remove card - not found in collection`, { username, cardId });
+        }
+    } catch (error) {
+        logger.error("Error removing card from collection", {
+            username,
+            cardId,
+            error: error.message
+        });
+        res.status(400).json({
+            status: false,
+            data: error.message
+        });
+    }
+};
+
+exports.updateCardQuantity = async (req, res) => {
+    const username = req.params.username;
+    const cardId = req.params.cardId;
+    const newQuantity = req.body.quantity;
+
+    try {
+        const result = await userService.updateCardQuantity(username, cardId, newQuantity);
+
+        if (result) {
+            res.status(200).json({
+                status: true,
+                data: result
+            });
+            logger.info(`Updated quantity for card ${cardId} in ${username}'s collection`);
+        } else {
+            res.status(404).json({
+                status: false,
+                data: "Error: User or card not found in collection"
+            });
+            logger.warn(`Failed to update card quantity - not found in collection`, { username, cardId });
+        }
+    } catch (err) {
+        console.log("Error updating card quantity", err);
+        logger.error("Error updating card quantity", { 
+            username, 
+            cardId, 
+            error: err.message 
+        });
+        res.status(400).json({
+            status: false,
+            data: err.message
+        });
+    }
+};
