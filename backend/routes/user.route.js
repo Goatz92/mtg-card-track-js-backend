@@ -19,6 +19,7 @@ router.delete('/:username', verifyToken, verifyRoles('ADMIN'), userController.de
 
 // User card collection routes
 router.post('/:username/collection/:cardId', userController.addCardToCollection);
+router.get('/:username/collection', userController.getUserCollection);
 router.patch('/:username/collection/:cardId/quantity', userController.updateCardQuantity);
 router.delete(':username/collection/:cardId', userController.removeCardFromCollection);
 

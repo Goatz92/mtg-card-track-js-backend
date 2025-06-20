@@ -46,25 +46,25 @@ const userSchema = new Schema ({
     },
 
     //Collection Stats
-    collectionStats: {
-        card: { type: Schema.Types.ObjectId, ref: 'Card' },
-        quantity: { type: Number, default: 1},
-        totalCards: { type: Number, default: 0},
-        totalValue: { type: Number, default: 0}, // Maybe use Scryfall values
-        byRarity: {
-            common: { type: Number, default: 0},
-            uncommon: { type: Number, default: 0},
-            rare: { type: Number, default: 0},
-            mythic: { type: Number, default: 0}
-        },
-        byColor: {
-            white: { type: Number, default: 0},
-            blue: { type: Number, default: 0},
-            black: { type: Number, default: 0},
-            red: { type: Number, default: 0},
-            green: { type: Number, default: 0},
-            colorless: { type: Number, default: 0}
-        }
+    collection: {
+        type: [{
+            card: {
+                type: Schema.Types.ObjectId,
+                ref: 'Card',
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true,
+                min: 1,
+                default: 1
+            },
+            addedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }],
+        default: []
     },
 
     // Deck Managment

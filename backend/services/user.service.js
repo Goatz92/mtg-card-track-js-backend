@@ -45,18 +45,17 @@ async function addCardToCollection(username, cardId, quantity = 1) {
         }
         // Update user collection
         const user = await User.findOneAndUpdate(
-            { username },
+            { username, 'collection.card': { $ne: cardId} },
             {
                 $addToSet: {
-                    'collection.cards' : {
+                    collection : {
                         card: cardId,
                         quantity: quantity
                     }
-                },
-                $inc: { 'collection.totalCards': quantity }
+                }
             },
             { new: true }
-        );
+        ).populate('collection.card');
 
         if(!user) {
             logger.error('User not found', { username });
@@ -123,11 +122,28 @@ async function updateCardQuantity(username, cardId, newQuantity) {
     }
 }
 
+async function getUserCollection(username) {
+    try {
+        const user = await User.findOne({ username })
+            .populate('collection.card')
+            .select('collection -_id');
+
+        if(!user) {
+        logger.error('User not found', { username });
+        throw new Error('User not found');
+        }   
+    } catch (error) {
+        logger.error('Error getting user collection', { error });
+        throw error;
+    }
+}
+
 module.exports = { 
     findAll, 
     findOne, 
     findLastInserted,
     addCardToCollection,
     removeCardFromCollection,
-    updateCardQuantity
+    updateCardQuantity,
+    getUserCollection
 };

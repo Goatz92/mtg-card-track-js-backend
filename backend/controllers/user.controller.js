@@ -182,39 +182,56 @@ exports.checkDuplicateEmail = async(req, res) => {
 
 // Card functions
 
-exports.addCardToCollection = async(req, res) => {
-    const username = req.params.username;
-    const cardId = req.params.cardId;
-    const quantity = req.body.quantity || 1;
+exports.addCardToCollection = async (req, res) => {
+  try {
+        const { username, cardId } = req.params;
+        
+        // Safely get quantity with default value 1
+        const quantity = parseInt(req.body?.quantity) || 1;
+        
+        // Validate quantity
+        if (isNaN(quantity) || quantity < 1) {
+            return res.status(400).json({
+                status: false,
+                message: "Quantity must be a positive integer"
+            });
+        }
 
-    try {
         const result = await userService.addCardToCollection(username, cardId, quantity);
-
-        if(result) {
-            req.status(200).json({
+        
+        if (result) {
+            res.status(200).json({
                 status: true,
                 data: result
             });
-            logger.info(`Successfully added card ${cardId} to ${username}'s collection`)
         } else {
             res.status(404).json({
                 status: false,
-                data: "Error: User or card not Found"
+                message: "User or card not found"
             });
-            logger.warn(`Failed to add card - user or card not found`, {
-                username, cardId });
         }
-    } catch (error) {
-        logger.error("Error adding card to collection", {
-            username,
-            cardId,
-            error: error.message
-        });
-        res.status(400).json({
+    } catch (err) {
+        console.error("Error in addCardToCollection:", err);
+        res.status(500).json({
             status: false,
-            data: error.message
+            message: err.message || "Internal server error"
         });
     }
+};
+
+exports.getUserCollection = async (req, res) => {
+  try {
+    const collection = await userService.getUserCollection(req.params.username);
+    res.status(200).json({
+      status: true,
+      data: collection
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      message: error.message
+    });
+  }
 };
 
 exports.removeCardFromCollection = async (req, res) => {
