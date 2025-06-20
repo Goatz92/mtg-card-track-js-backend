@@ -57,6 +57,9 @@ const cardSchema = new Schema({
         type: Boolean,
         default: false
     },
+    // Quantity should be removed in future iterations
+    // Card model represents the bulk data of the database
+    // Not the collection of a user
     quantity: {
         type: Number,
         default: 1,
@@ -110,6 +113,7 @@ cardSchema.index({ set: 1, collectorNumber: 1});
 cardSchema.index({ colors: 1, cmc: 1});
 
 // Virtual for frontend display
+// Will probably be removed if not used in future iterations
 // cardSchema.virtual('displayName').get(function() {
 //     return `${this.name} (${this.set.toUpperCase()}) ${this.collectorNumber}`;
 // });
