@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const userController = require('../controllers/user.controller')
+const userCardController = require('../controllers/user.card.controller')
 const verifyToken = require('../middleware/auth.middleware').verifyToken
 const verifyRoles = require('../middleware/auth.middleware').verifyRoles;
 
