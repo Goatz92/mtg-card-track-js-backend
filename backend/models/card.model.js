@@ -57,9 +57,10 @@ const cardSchema = new Schema({
         type: Boolean,
         default: false
     },
-    // Quantity should be removed in future iterations
-    // Card model represents the bulk data of the database
-    // Not the collection of a user
+    /** Quantity could be removed in future iterations
+     Card model represents the cards' bulk data in the database
+     Not the collection of a user
+     */
     quantity: {
         type: Number,
         default: 1,
