@@ -9,33 +9,54 @@ const cardSchema = new Schema({
         type: String,
         required: [true, 'Card name is required'],
         trim: true,
-        index: true 
+        index: true,
+        text: true 
     },
     scryfallId: {
         type: String,
-        unique: true
+        unique: true,
+        index: true
     },
-    multiverseId: String,
+    multiverseId: {
+        type: String,
+        index: true,
+        sparse: true
+    },
 
     // Gameplay Properties
     manaCost: String,
     cmc: {
         type: Number,
-        min: 0
+        min: 0,
+        index: true
     },
     colors: [{
         type: String,
-        enum: ['W', 'U', 'B', 'R', 'G', 'C'] // C for Colorless
+        enum: ['W', 'U', 'B', 'R', 'G', 'C'] ,// C for Colorless
+        index: true
     }],
     colorIdentity: [{
         type: String,
         enum: ['W', 'U', 'B', 'R', 'G', 'C']
     }],
-    type: String,
-    // TODO: Search for possible usage or remove
-    types: [String], 
-    subtypes: [String],
-    text: String,
+    // Card type (Dragon, Eldrazi, etc)
+    type: {
+        type: String,
+        index: true
+    },
+    // Cards may have multiple types (Phyrexian Demon)
+    types: {
+        type: String,
+        index: true
+    },
+    subtypes: {
+        type: [String],
+        index: true
+    },
+    oracleText: {
+        type: String,
+        text: true
+    },
     power: String, // String to handle values like "*" / "1+1" / "*+1"
     toughness: String,
     loyalty: String,
@@ -44,31 +65,23 @@ const cardSchema = new Schema({
     rarity: {
         type: String,
         required: true,
-        enum: ["COMMON", "UNCOMMON", "RARE", "MYTHIC", "SPECIAL", "BONUS"]
+        enum: ["COMMON", "UNCOMMON", "RARE", "MYTHIC", "SPECIAL", "BONUS"],
+        index: true
     },
     set: {
         type: String,
         required: true,
-        uppercase: true
+        uppercase: true,
+        index: true
     },
     setName: String,
-    collectorNumber: String,
+    collectorNumber: {
+        type: String,
+        index: true
+    },
     isFoil: {
         type: Boolean,
         default: false
-    },
-    /** Quantity could be removed in future iterations
-     Card model represents the cards' bulk data in the database
-     Not the collection of a user
-     */
-    quantity: {
-        type: Number,
-        default: 1,
-        min: 0,
-        validate: {
-            validator: Number.isInteger,
-            message: 'Quantity must be a whole number'
-        }
     },
     imageUris: {
         small: String,
@@ -78,8 +91,9 @@ const cardSchema = new Schema({
         art_crop: String,
         border_crop: String
     },
+    default: {},
     artist: String,
-    flavor: String,
+    flavorText: String,
 
     // Game properties
     layout: {
@@ -90,13 +104,15 @@ const cardSchema = new Schema({
         type: String,
         enum: ['nonfoil', 'foil', 'etched', 'glossy']
     }],
+    prices: {
+        usd: String,
+        usd_foil: String,
+        eur: String,
+        tix: String
+    },
 
     // User-specific
-    condition: {
-        type:String,
-        enum: ['MINT', 'NEAR_MINT', 'LIGHTLY_PLAYED', 'MODERATELY_PLAYED', 'HEAVILY_PLAYED', 'DAMAGED'],
-        default: 'NEAR_MINT'
-    },
+    
     lastUpdated: {
         type: Date,
         default: Date.now
@@ -104,14 +120,21 @@ const cardSchema = new Schema({
 }, {
     collection: 'cards',
     timestamps: true,
-    toJSON: { virtuals: true},
-    toObject: { virtuals: true}
-})
+    toJSON: { 
+        virtuals: true,
+        transform: function(doc, ret) {
+            delete ret.__v;
+            return ret;
+        }
+    },
+    toObject: { virtuals: true }
+});
 
-// Compound index for faster queries
-cardSchema.index({ name: 1, set: 1, collectorNumber: 1}, { unique: true});
+// Compound indexes for faster queries
+cardSchema.index({ name: 1, set: 1});
 cardSchema.index({ set: 1, collectorNumber: 1});
 cardSchema.index({ colors: 1, cmc: 1});
+cardSchema.index({ type: 1, subtypes: 1});
 
 // Virtual for frontend display
 // Will probably be removed if not used in future iterations
