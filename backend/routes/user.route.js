@@ -17,10 +17,4 @@ router.get('/:username', verifyToken, userController.findOne);
 router.patch('/:username', verifyToken, verifyRoles('ADMIN'), userController.update);
 router.delete('/:username', verifyToken, verifyRoles('ADMIN'), userController.deleteByUsername);
 
-// User card collection routes
-router.post('/:username/collection/:cardId', userController.addCardToCollection);
-router.get('/:username/collection', userController.getUserCollection);
-router.patch('/:username/collection/:cardId/quantity', userController.updateCardQuantity);
-router.delete(':username/collection/:cardId', userController.removeCardFromCollection);
-
 module.exports = router;
