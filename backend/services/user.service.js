@@ -35,7 +35,6 @@ async function findLastInserted() {
     }
 }
 
-
 module.exports = { 
     findAll, 
     findOne, 
