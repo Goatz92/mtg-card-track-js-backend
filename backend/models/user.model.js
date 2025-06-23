@@ -46,7 +46,7 @@ const userSchema = new Schema ({
     },
 
     //Collection Stats
-    collection: {
+    userCollection: {
         type: [{
             card: {
                 type: Schema.Types.ObjectId,
@@ -59,6 +59,8 @@ const userSchema = new Schema ({
                 min: 1,
                 default: 1
             },
+            isFoil: Boolean,
+            notes: String,
             addedAt: {
                 type: Date,
                 default: Date.now
@@ -93,10 +95,5 @@ const userSchema = new Schema ({
     timestamps: true,
     toJSON: { virtuals: true}
 });
-
-// Virtual for deck count
-// userSchema.virtual('deckCount').get(function() {
-//     return this.decks.length;
-// });
 
 module.exports = mongoose.model("User", userSchema)
