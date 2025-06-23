@@ -17,4 +17,7 @@ router.get('/:username', verifyToken, userController.findOne);
 router.patch('/:username', verifyToken, verifyRoles('ADMIN'), userController.update);
 router.delete('/:username', verifyToken, verifyRoles('ADMIN'), userController.deleteByUsername);
 
+//User collection handling routes
+router.get('/:username/collection', userCardController.getUserCollection);
+router.post('/:username/collection/:scryfallId', userCardController.addToCollection);
 module.exports = router;
