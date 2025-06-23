@@ -53,6 +53,11 @@ const userSchema = new Schema ({
                 ref: 'Card',
                 required: true
             },
+            name: {
+                type: String,
+                ref: 'Card',
+                required: true
+            },
             quantity: {
                 type: Number,
                 required: true,
