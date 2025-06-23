@@ -40,7 +40,38 @@ exports.addToCollection = async (req, res) => {
             card = await Card.create({
                 scryfallId: scryfallData.id,
                 name: scryfallData.name,
-                // Add more fields here
+                multiversId: scryfallData.multivers_ids?.[0] || null,
+                manaCost: scryfallData.mana_cost || '',
+                cmc: scryfallData.cmc || 0,
+                colors: scryfallData.colors || [],
+                colorIdentity: scryfallData.color_identity || [],
+                type: scryfallData.type_line || '',
+                types: scryfallData.card_faces
+                    ? [...new Set(scryfallData.card_faces.flatMap(face => face.type_line.split('-')[0].trim().split(' ')))]
+                    : scryfallData.type_line.split('-')[0].trim().split(' '),
+                subtypes: scryfallData.subtypes || [], 
+                text: scryfallData.oracle_text || [],
+                power: scryfallData.power || '',
+                toughness: scryfallData.toughness || '',
+                loyalty: scryfallData.loyalty || '',
+                rarity: scryfallData.rarity.toUpperCase(),
+                setName: scryfallData.setName,
+                collectorNumber: scryfallData.collector_number,
+                isFoil: scryfallData.foil,
+                imageUris: scryfallData.imageUris || {
+                    small: scryfallData.card_faces?.[0]?.image_uris?.small || '',
+                    normal: scryfallData.card_faces?.[0]?.image_uris?.normal || '',
+                    large: scryfallData.card_faces?.[0]?.image_uris?.large || '',
+                    png: scryfallData.card_faces?.[0]?.image_uris?.png || '',
+                    art_crop: scryfallData.card_faces?.[0]?.image_uris?.png || '',
+                    border_crop: scryfallData.card_faces?.[0]?.image_uris?.border_crop || ''
+                },
+                artist: scryfalldata.artist || 'Unkown',
+                flavor: scryfallData.flavor_text || '',
+                layout: scryfallData.layout,
+                finishes: scryfallData.finishes || [],
+                quantity: 0, // Initialize to 0 until user adds one
+                condition: 'NEAR_MINT' // Default condition
             });
         }
 
