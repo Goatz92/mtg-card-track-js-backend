@@ -121,59 +121,6 @@ async function deleteCard(id) {
     }
 }
 
-async function addCardToUser(username, cardName, quantity) {
-    try {
-
-        const scryfallCard = scryfallService.getCardByName(cardName, true);
-
-        const scryfallId = scryfallCard.id;
-
-        let result = await Card.findOne({ scryfallId });
-        if(!card) {
-            card = await Card.create({
-                scryfallId,
-                name: scryfallCard.name,
-                manaCost: scryfallCard.mana_cost,
-                type: scryfallCard.type_line,
-                rarity: scryfallCard.rarity.toLowerCase(),
-                set: scryfallCard.set,
-                imageUrl: scryfallCard.image_uris?.normal || scryfallCard.card_faces?.[0]?.image_uris?.normal
-            });
-        }
-
-        const user = await User.findOneAndUpdate({
-
-        })
-    }
-}
-
-
-// Helper method
-async function findOrCreateCard(scryfallId, userData = {}) {
-    try {
-        // Check DB first
-        let card = await Card.findOne({ scryfallId });
-
-        // Fecth from Scryfall if not found
-        if(!card) {
-            const scryfallCard = await scryfallService.getCardById(scryfallId);
-            if (!scryfallcard) {
-                throw new Error('Card not found in Scryfall');
-            }
-
-            card = await this.addCardFromScryfall(scryfallId, userData);
-        }
-        
-        return card;
-    } catch (error) {
-        logger.error('Error in method findOrCreateCard', { 
-            scryfallId, 
-            error: error.message 
-        });
-        throw error;
-    }
-}
-
 module.exports = {
     findAll,
     findByName,
@@ -181,6 +128,4 @@ module.exports = {
     searchScryfallAPI,
     addCardFromScryfall,
     addCardFromScryfallByName,
-    deleteCard,
-    findOrCreateCard
 };
