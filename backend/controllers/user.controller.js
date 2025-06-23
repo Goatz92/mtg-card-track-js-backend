@@ -1,8 +1,10 @@
 const User = require('../models/user.model');
 const userService = require('../services/user.service');
+const cardService = require('../services/card.service');
 const bcrypt = require('bcrypt');
 
 const logger = require('../logger/logger');
+const scryfallService = require('../services/scryfall.service');
 
 exports.findAll = async(req, res) => {
     
@@ -179,125 +181,3 @@ exports.checkDuplicateEmail = async(req, res) => {
         });
     }
 }
-
-// Card functions
-
-exports.addCardToCollection = async (req, res) => {
-  try {
-        const { username, cardId } = req.params;
-        
-        // Safely get quantity with default value 1
-        const quantity = parseInt(req.body?.quantity) || 1;
-        
-        // Validate quantity
-        if (isNaN(quantity) || quantity < 1) {
-            return res.status(400).json({
-                status: false,
-                message: "Quantity must be a positive integer"
-            });
-        }
-
-        const result = await userService.addCardToCollection(username, cardId, quantity);
-        
-        if (result) {
-            res.status(200).json({
-                status: true,
-                data: result
-            });
-        } else {
-            res.status(404).json({
-                status: false,
-                message: "User or card not found"
-            });
-        }
-    } catch (err) {
-        console.error("Error in addCardToCollection:", err);
-        res.status(500).json({
-            status: false,
-            message: err.message || "Internal server error"
-        });
-    }
-};
-
-exports.getUserCollection = async (req, res) => {
-  try {
-    const collection = await userService.getUserCollection(req.params.username);
-    res.status(200).json({
-      status: true,
-      data: collection
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: false,
-      message: error.message
-    });
-  }
-};
-
-exports.removeCardFromCollection = async (req, res) => {
-    const username = req.params.username;
-    const cardId = req.params.cardId;
-
-    try {
-        const result = await userService.removeCardFromCollection(username, cardId);
-        
-        if (result) {
-            res.status(200).json({
-                status: true,
-                data: result
-            });
-            logger.info(`Successfully removed card ${cardId} from ${username}'s collection`);
-        } else {
-            res.status(404).json({
-                status: false,
-                data: "Error: User or card not found in collection"
-            });
-            logger.warn(`Failed to remove card - not found in collection`, { username, cardId });
-        }
-    } catch (error) {
-        logger.error("Error removing card from collection", {
-            username,
-            cardId,
-            error: error.message
-        });
-        res.status(400).json({
-            status: false,
-            data: error.message
-        });
-    }
-};
-
-exports.updateCardQuantity = async (req, res) => {
-    const username = req.params.username;
-    const cardId = req.params.cardId;
-    const newQuantity = req.body.quantity;
-
-    try {
-        const result = await userService.updateCardQuantity(username, cardId, newQuantity);
-
-        if (result) {
-            res.status(200).json({
-                status: true,
-                data: result
-            });
-            logger.info(`Updated quantity for card ${cardId} in ${username}'s collection`);
-        } else {
-            res.status(404).json({
-                status: false,
-                data: "Error: User or card not found in collection"
-            });
-            logger.warn(`Failed to update card quantity - not found in collection`, { username, cardId });
-        }
-    } catch (err) {
-        console.log("Error updating card quantity", err);
-        logger.error("Error updating card quantity", { 
-            username, 
-            cardId, 
-            error: err.message 
-        });
-        res.status(400).json({
-            status: false,
-            data: err.message
-        });
-    }
-};
