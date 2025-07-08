@@ -40,13 +40,14 @@ const cardSchema = new Schema({
         enum: ['W', 'U', 'B', 'R', 'G', 'C']
     }],
     // Card type (Dragon, Eldrazi, etc)
-    type: {
-        type: String,
-        index: true
-    },
+    // cardType: {
+    //     type: String,
+    //     index: true
+    // },
     // Cards may have multiple types (Phyrexian Demon)
     types: {
-        type: String,
+        type: [ String ],
+        default: [],
         index: true
     },
     subtypes: {
