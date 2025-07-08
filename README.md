@@ -3,11 +3,21 @@ A web application for managing Magic: The Gathering card collections, built with
 
 # Built With
 
-[TOC] 
+
+- [Node.js](https://nodejs.org/) - JavaScript runtime
+- [Express.js](https://expressjs.com/) - Web framework for Node.js
+- [MongoDB](https://www.mongodb.com/) - NoSQL database
+- [Mongoose](https://mongoosejs.com/) - MongoDB object modeling for Node.js
+- [JWT (jsonwebtoken)](https://github.com/auth0/node-jsonwebtoken) - Authentication and authorization
+- [bcryptjs](https://github.com/dcodeIO/bcrypt.js) - Password hashing
+- [Scryfall API](https://scryfall.com/docs/api) - Magic: The Gathering card data
+- [dotenv](https://github.com/motdotla/dotenv) - Environment variable management
+- [morgan](https://github.com/expressjs/morgan) - HTTP request logger middleware
+- [winston](https://github.com/winstonjs/winston) - Logging library
 
 ## Features
 
-**Core CRUD Features**
+- **Core CRUD Features**
     - [x] Add Cards: Manually input new cards with all relevant attributes
     - [x] View Collection: Browse all cards in your collection
     - [x] Search Functionality: Filter cards by name, type, color, etc.
