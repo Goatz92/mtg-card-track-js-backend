@@ -46,33 +46,20 @@ const userSchema = new Schema ({
     },
 
     //Collection Stats
-    userCollection: {
-        type: [{
-            card: {
-                type: Schema.Types.ObjectId,
-                ref: 'Card',
-                required: true
-            },
-            name: {
-                type: String,
-                ref: 'Card',
-                required: true
-            },
-            quantity: {
-                type: Number,
-                required: true,
-                min: 1,
-                default: 1
-            },
-            isFoil: Boolean,
-            notes: String,
-            addedAt: {
-                type: Date,
-                default: Date.now
-            }
-        }],
-        default: []
-    },
+    userCollection: [{
+        card: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Card'
+        },
+        quantity: {
+            type: Number,
+            default: 1
+        },
+        addedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
 
     // Deck Managment
     decks: [{
