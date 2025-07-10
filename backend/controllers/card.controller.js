@@ -4,8 +4,24 @@ const { successResponse, errorResponse } = require('../utils/responseHandler');
 
 const searchCardScryfall = async (req, res) => {
     try {
-        const cards = await cardService.searchScryfallAPI(req.params.name);
-        res.json(cards);
+        const cardsFromScryfall = await cardService.searchScryfallAPI(req.params.name);
+        
+        const cardArray = Array.isArray(cardsFromScryfall) ? cardsFromScryfall : [cardsFromScryfall];
+
+        const formattedCards = cardArray.map(card => ({
+            _id: card.id,
+            name: card.name,
+            manaCost: card.mana_cost,
+            cmc: card.cmc,
+            colors: card.colors,
+            type: card.type_line,
+            text: card.oracle_text,
+            imageUrl: card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal,
+            set: card.set,
+            rarity: card.rarity
+        }));
+        
+        res.json(formattedCards);
     } catch (error) {
         res.status(500).json({ error: message });
     }
