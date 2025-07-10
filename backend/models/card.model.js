@@ -137,10 +137,4 @@ cardSchema.index({ set: 1, collectorNumber: 1});
 cardSchema.index({ colors: 1, cmc: 1});
 cardSchema.index({ type: 1, subtypes: 1});
 
-// Virtual for frontend display
-// Will probably be removed if not used in future iterations
-// cardSchema.virtual('displayName').get(function() {
-//     return `${this.name} (${this.set.toUpperCase()}) ${this.collectorNumber}`;
-// });
-
 module.exports = mongoose.model('Card', cardSchema, 'cards');
