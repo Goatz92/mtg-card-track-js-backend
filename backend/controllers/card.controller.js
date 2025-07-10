@@ -2,8 +2,6 @@ const cardService = require('../services/card.service');
 const logger = require ('../logger/logger');
 const { successResponse, errorResponse } = require('../utils/responseHandler');
 
-// @desc Search Scryfall for a card
-// @route GET /search/:name
 const searchCardScryfall = async (req, res) => {
     try {
         const cards = await cardService.searchScryfallAPI(req.params.name);
@@ -13,9 +11,6 @@ const searchCardScryfall = async (req, res) => {
     }
 }
 
-// @desc    Add card From Scryfall by ID
-// @route   GET /api/cards/scryfall/:scryfallId
-// @access  Public
 const addCardFromScryfall = async (req, res) => {
     try {
         const { scryfallId } = req.params;
@@ -29,9 +24,6 @@ const addCardFromScryfall = async (req, res) => {
     }
 };
 
-// @desc    Get card from Scryfall by name
-// @route   GET /api/cards/scryfall/:name
-// @access  Public
 const addCardFromScryfallByName = async (req, res) => {
     try {
 
@@ -54,9 +46,6 @@ const addCardFromScryfallByName = async (req, res) => {
     }
 }
 
-// @desc    Get all cards from database
-// @route   GET /api/cards
-// @access  Public
 const getAllCards = async (req, res) => {
     try {
         const cards = await cardService.findAll();
@@ -68,9 +57,6 @@ const getAllCards = async (req, res) => {
     }
 }
 
-// @desc    Get single card by Name 
-// @route   GET /api/cards/:name
-// @access  Public
 const getCardByName = async (req, res) => {
     try {
         const decodedName = decodeURIComponent(req.params.name);
@@ -85,9 +71,6 @@ const getCardByName = async (req, res) => {
     }
 }
 
-// @desc    Update a card in user's collection
-// @route   PUT /api/collection/:id
-// @access  Public
 const updateCard = async (req, res) => {
     try {
         const updatedCard = await cardService.updateCard(
@@ -108,9 +91,6 @@ const updateCard = async (req, res) => {
     }
 }
 
-// @desc    Remove a card from user's collection
-// @route   DELETE /api/collection/:id
-// @access  Public
 const deleteCard = async (req, res) => {
     try {
         const deletedCard = await cardService.deleteCard(req.params.id);
