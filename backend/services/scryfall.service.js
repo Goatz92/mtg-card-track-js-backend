@@ -26,6 +26,7 @@ class ScryfallService {
 
             return response.data;
         } catch (error) {
+
             logger.error('Scryfall API error', {
                 error: error.message,
                 cardName: name,
