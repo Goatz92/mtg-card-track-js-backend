@@ -10,7 +10,7 @@ exports.login = async(req, res) => {
 
     try {
         const result = await User.findOne(
-            { username: username}, 
+            { username: username }, 
             { username: 1 , email: 1, password: 1, roles: 1});
             const isMatch = await bcrypt.compare(password, result.password)
 
