@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const userCardController = require('../controllers/user.card.controller')
+const userController = require('../controllers/user.controller');
+const userCardController = require('../controllers/user.card.controller');
 const verifyToken = require('../middleware/auth.middleware').verifyToken
 const verifyRoles = require('../middleware/auth.middleware').verifyRoles;
 
@@ -19,5 +20,7 @@ router.delete('/:username', verifyToken, verifyRoles('ADMIN'), userController.de
 
 //User collection handling routes
 router.get('/:username/collection', userCardController.getUserCollection);
-router.post('/:username/collection/:scryfallId', userCardController.addToCollection);
+router.post('/:username/collection/', userCardController.addToCollection);
+router.post('/:username/collection/:scryfallId', userCardController.addToCollection)
+
 module.exports = router;
