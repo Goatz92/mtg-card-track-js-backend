@@ -1,10 +1,8 @@
 const User = require('../models/user.model');
 const userService = require('../services/user.service');
-const cardService = require('../services/card.service');
 const bcrypt = require('bcrypt');
 
 const logger = require('../logger/logger');
-const scryfallService = require('../services/scryfall.service');
 
 exports.findAll = async(req, res) => {
     
@@ -15,7 +13,6 @@ exports.findAll = async(req, res) => {
             data: result
         });
         logger.info("Success in reading all users");
-        logger.warn("Success in reading all users");
         logger.error("Error in reading all users");
     } catch (err) {
         console.log("Error in reading all users");
