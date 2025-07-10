@@ -84,6 +84,14 @@ npm start
 - `POST /api/cards/scryfall/id/:scryfallId` - Add card by Scryfall ID
 - `POST /api/cards/scryfall/name/:cardName` - Add card by name
 
+### User Collection
+
+- `GET /api/users/:username/collection`  Get all cards in a user's collection
+- `POST /api/users/:username/collection/:cardId`  Add a card to a user's collection (body: `{ "quantity": 1 }`)
+- `PUT /api/users/:username/collection/:cardId`  
+Update the quantity or details of a card in a user's collection (body: `{ "quantity": 3 }`)
+- `DELETE /api/users/:username/collection/:cardId`  Remove a card from a user's collection
+
 ### Users
 - `GET /api/users` - Get all users (Admin only)
 - `GET /api/users/:username` - Get user by username
