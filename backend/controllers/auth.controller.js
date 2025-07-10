@@ -5,41 +5,77 @@ const authService = require('../services/auth.service');
 exports.login = async(req, res) => {
     console.log("Login User", req.body);
     
-    const username = req.body.username;
-    const password = req.body.password;
+    const { username, password } = req.body;
 
     try {
         const result = await User.findOne(
-            { username: username }, 
-            { username: 1 , email: 1, password: 1, roles: 1});
-            const isMatch = await bcrypt.compare(password, result.password)
+            {username: username},
+            {username: 1, email: 1, password: 1, roles: 1}
+        );
+        if (!result) {
+            return res.status(401).json({
+                status: false,
+                message: "Invalid credentials"
+            });
+        }
+        
+        const isMatch = await bcrypt.compare(password, result.password);
 
-            if (result && result.username === username && isMatch) {
-                const token = authService.generateAccessToken(result);
-                res.status(200).json({ status: true, data: token });
-                } else {
-                    res.status(404).json({ status: false, data: "Error: User not logged in"});
-                }
-        } catch (err) {
-            console.log("Problem in logging: ", err);
-            res.status(400).json({ status: false, data: err })
+        if(!isMatch) {
+            return res.status(401).json({
+                status: false,
+                message: "Invalid credentials"
+            });
+        }
+
+        const token = authService.generateAccessToken(result);
+        res.status(200).json({
+            status: true,
+            token: token,
+            data: {
+                username: result.username,
+                email: result.email,
+                roles: result.roles
+            }
+        });
+    } catch (error) {
+        console.log("Problem in logging: ", error);
+        res.status(500).json({
+            status: false,
+            message: "Internal server error"
+        });
     }
-}
+};
 
 exports.googleLogin = async(req, res) => {
     const code = req.query.code;
 
-    if(!code) {
-        res.status(400).json({ 
+    if (!code) {
+        res.status(400).json({
             status: false,
-            data: "Authorization code is missing"});
+            message: "No authorization code provided"
+        });
     } else {
-        let user = await authService.googleAuth(code);
-        if(user) {
-            console.log("---", user, "---");
-            res.status(200).json({status: true, data: user});
-        } else {
-            res.status(400).json({status: false, data: "Problem with Google Login"});
+        try {
+            let user = await authService.googleAuth(code);
+            if (user) {
+                console.log("---", user, "---");
+                res.status(200).json({
+                    status: true,
+                    data: user
+                });
+            } else {
+                res.status(400).json({
+                    status: false,
+                    message: "Google authentication failed"
+                });
+            }
+        } catch (error) {
+            console.error("Google login error:", error);
+            res.status(500).json({
+                status: false,
+                message: "Internal server error"
+            });
         }
     }
-}
+};
