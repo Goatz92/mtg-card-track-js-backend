@@ -10,6 +10,9 @@ router.post('/scryfall/name/:cardName', cardController.addCardFromScryfallByName
 //MTG API routes
 // router.get('/search/:name', getCardFromAPI); // Get card by name from API
 
+// Random card route
+router.get('/random', cardController.getRandomCard);
+
 //Local DB operations
 router.get('/', cardController.getAllCards);
 router.get('/:name', cardController.getCardByName); 
@@ -17,8 +20,5 @@ router.get('/:name', cardController.getCardByName);
 //Collection Managment
 router.put('/:id', cardController.updateCard); 
 router.delete('collection/:id', cardController.deleteCard); 
-
-// Random card route
-router.get('/random', cardController.getRandomCard);
 
 module.exports = router;
