@@ -51,6 +51,19 @@ class ScryfallService {
         throw error;
         }
     }
+
+    async getRandomCard() {
+        try {
+            const response = await axios.get(`${this.baseUrl}/cards/random`);
+            return response.data;
+        } catch (error) {
+            logger.error('Scryfall API error (random)', {
+                error: error.message,
+                endpoint: 'cards/random'
+            });
+            throw error;
+        }
+    }
 }
 
 module.exports = new ScryfallService();

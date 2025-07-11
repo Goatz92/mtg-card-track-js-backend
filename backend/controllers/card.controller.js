@@ -124,6 +124,16 @@ const deleteCard = async (req, res) => {
     }
 };
 
+const getRandomCard = async (req, res) => {
+    try {
+        const card = await cardService.fetchRandomFromScryfall();
+        // return as an array for consistency with search
+        res.json([card]);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch random card' });
+    }
+};
+
 module.exports = {
     getAllCards,
     getCardByName,
@@ -131,5 +141,6 @@ module.exports = {
     deleteCard,
     searchCardScryfall,
     addCardFromScryfall,
-    addCardFromScryfallByName
+    addCardFromScryfallByName,
+    getRandomCard
 };

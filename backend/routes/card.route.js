@@ -18,4 +18,7 @@ router.get('/:name', cardController.getCardByName);
 router.put('/:id', cardController.updateCard); 
 router.delete('collection/:id', cardController.deleteCard); 
 
+// Random card route
+router.get('/random', cardController.getRandomCard);
+
 module.exports = router;

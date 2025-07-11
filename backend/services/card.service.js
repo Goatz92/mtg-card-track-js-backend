@@ -121,6 +121,28 @@ async function deleteCard(id) {
     }
 }
 
+async function fetchRandomFromScryfall() {
+    try {
+        const raw = await scryfallService.getRandomCard();
+        const formatted = {
+            _id: raw.id,
+            name: raw.name,
+            manaCost: raw.mana_cost,
+            cmc: raw.cmc,
+            colors: raw.colors,
+            type: raw.type_line,
+            text: raw.oracle_text,
+            imageUrl: raw.image_uris?.normal || raw.card_faces?.[0]?.image_uris?.normal,
+            set: raw.set,
+            rarity: raw.rarity
+        };
+        return formatted;
+    } catch (error) {
+        logger.error('Error fetching random card', { error: error.message });
+        throw error;
+    }
+}
+
 module.exports = {
     findAll,
     findByName,
@@ -128,4 +150,5 @@ module.exports = {
     searchScryfallAPI,
     addCardFromScryfall,
     addCardFromScryfallByName,
+    fetchRandomFromScryfall
 };
