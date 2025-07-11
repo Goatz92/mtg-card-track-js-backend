@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { logger } = require('./logger/logger');
 
 const app = require('./app');
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
