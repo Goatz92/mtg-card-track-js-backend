@@ -52,10 +52,20 @@ exports.findOne = async(req, res) => {
 }
 
 exports.create = async(req, res) => {
-    
     let data = req.body;
-    const SaltOrRounds = 10;
 
+    // Check for duplicate username or email
+    const existing = await User.findOne({
+        $or: [ { username: data.username }, { email: data.email } ]
+    });
+    if (existing) {
+        return res.status(409).json({
+            status: false,
+            message: 'Username or email already exists'
+        });
+    }
+
+    const SaltOrRounds = 10;
     let hashedPassword = "";
     if(data.password)
         hashedPassword = await bcrypt.hash(data.password, SaltOrRounds)
