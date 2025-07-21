@@ -49,7 +49,10 @@ exports.addToCollection = async (req, res) => {
             card = await Card.create({
                 name: scryfallData.name,
                 scryfallId: scryfallData.id,
-                // Add other relevant fields from scryfallCard
+                rarity: scryfallData.rarity.toUpperCase(),
+                set: scryfallData.set.toUpperCase(),
+                setName: scryfallData.set_name,
+                imageUris: scryfallData.image_uris
             });
         }
 
