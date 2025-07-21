@@ -21,6 +21,7 @@ A web application for managing Magic: The Gathering card collections, built with
     - [x] Add Cards: Manually input new cards with all relevant attributes
     - [x] View Collection: Browse all cards in your collection
     - [x] Search Functionality: Filter cards by name, type, color, etc.
+    - [x] Random Card: Fetch a random Magic: The Gathering card from Scryfall
     - [x] Edit Cards: Update any field of existing cards
     - [x] Delete Cards: Remove cards from your collection
 
