@@ -1,5 +1,103 @@
-# mtg-card-track-js
-A web application for managing Magic: The Gathering card collections, built with Node.js, Express, and MongoDB.
+ # Magic: The Gathering Collection Tracker (Backend)
+ 
+ A RESTful API powering the MTG Collection Tracker app, built with Node.js, Express, MongoDB, and Mongoose. It offers JWT authentication, Scryfall integration, and user-specific collections.
+ 
+ ## Table of Contents
+ - [Features](#features)
+ - [Prerequisites](#prerequisites)
+ - [Getting Started](#getting-started)
+ - [Environment Variables](#environment-variables)
+ - [API Endpoints](#api-endpoints)
+ - [Architecture](#architecture)
+ - [Folder Structure](#folder-structure)
+ - [Contributing](#contributing)
+ - [License](#license)
+ 
+ ## Features
+ - User registration, login, and JWT-based authentication
+ - Role-based access control (USER, ADMIN)
+ - Add and search cards via Scryfall API, including random card fetch
+ - Persistent user collections with quantity tracking
+ - Data validation, error handling, and structured logging with Winston
+ 
+ ## Prerequisites
+ - Node.js >= 14
+ - MongoDB instance (local or Atlas)
+ - npm or yarn
+ 
+ ## Getting Started
+ 1. Clone the repository:
+    ```bash
+    git clone https://github.com/Goatz92/mtg-collection-js-backend.git
+    cd mtg-collection-js-backend/backend
+    ```
+ 2. Install dependencies:
+    ```bash
+    npm install
+    ```
+ 3. Create a `.env` file in `backend/`:
+    ```ini
+    MONGODB_URI=<your MongoDB URI>
+    JWT_SECRET=<your JWT secret>
+    PORT=4000
+    ```
+ 4. Start the server:
+    ```bash
+    npm start
+    ```
+ 5. Access the API at `http://localhost:4000/api`.
+ 
+ ## Environment Variables
+ - `MONGODB_URI` — MongoDB connection URI
+ - `JWT_SECRET` — Secret key for signing JWTs
+ - `PORT` — Port number for the server (default: 4000)
+ 
+ ## API Endpoints
+ ### Authentication
+ - `POST /api/auth/login` — Authenticate user, returns a JWT token
+ 
+ ### Users
+ - `POST /api/users/register` — Create a new user
+ - `GET /api/users` — List all users (Admin only)
+ - `GET /api/users/:username` — Retrieve a user by username
+ - `PATCH /api/users/:username` — Update user details (Admin only)
+ - `DELETE /api/users/:username` — Remove a user (Admin only)
+ 
+ ### Cards
+ - `GET /api/cards/search/:name` — Search cards by name via the Scryfall API
+ - `GET /api/cards/random` — Retrieve a random card
+ - `POST /api/cards/scryfall/id/:scryfallId` — Add a card by Scryfall ID
+ - `POST /api/cards/scryfall/name/:cardName` — Add a card by name
+ 
+ ### Collections
+ - `GET /api/users/:username/collection` — Fetch a user’s card collection
+ - `POST /api/users/:username/collection` — Add or increment a card in a user’s collection (body: `{ cardName, quantity }`)
+ 
+ ## Architecture
+ - Layered structure: routes → controllers → services → models
+ - Mongoose schemas for User, Card, Deck
+ - Middleware for authentication (`verifyToken`) and authorization (`verifyRoles`)
+ - Winston for structured logging
+ 
+ ## Folder Structure
+ ```plaintext
+ backend/
+ ├ controllers/   # Express route handlers
+ ├ middleware/    # Auth and role validation
+ ├ models/        # Mongoose schemas
+ ├ routes/        # API endpoints
+ ├ services/      # Business logic and Scryfall integration
+ ├ utils/         # Helpers (responses, errors)
+ ├ logger/        # Winston setup
+ ├ app.js         # Express app configuration
+ └ server.js      # Entry point
+ ```
+ 
+ ## Contributing
+ Contributions welcome! Please fork, add tests, and submit a pull request.
+ 
+ ## License
+ MIT License
 
 # Built With
 
